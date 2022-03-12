@@ -1,6 +1,7 @@
 package com.nicolasjoaquinparisi.socialmedia.service;
 
 import com.nicolasjoaquinparisi.socialmedia.entity.User;
+import com.nicolasjoaquinparisi.socialmedia.exception.BadRequestException;
 import com.nicolasjoaquinparisi.socialmedia.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,11 @@ public class UserService {
     }
 
     public User addUser(User user) {
+        Boolean existsUsername = userRepository.selectExistsUsername(user.getUsername());
+        if (existsUsername) {
+            throw new BadRequestException("Username " + user.getUsername() + " taken");
+        }
+
         return this.userRepository.save(user);
     }
 
